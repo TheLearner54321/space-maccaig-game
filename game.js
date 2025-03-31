@@ -1,3 +1,4 @@
+
 // Phaser 3 game based on your concept
 const quotes = [
   // Assisi
@@ -130,15 +131,9 @@ const config = {
   height: 600,
   physics: {
     default: 'arcade',
-    arcade: {
-      debug: false
-    }
+    arcade: { debug: false }
   },
-  scene: {
-    preload,
-    create,
-    update
-  }
+  scene: { preload, create, update }
 };
 
 let game = new Phaser.Game(config);
@@ -189,12 +184,12 @@ function create() {
       scoreText.setText('Score: ' + score);
       level = Math.floor(score / 50) + 1;
       levelText.setText('Level: ' + level);
-      flashFeedback.call(this, 0x00ff00); // green
+      flashFeedback.call(this, 0x00ff00);
     } else {
       wrongSound.play();
       health -= 1;
       healthText.setText('Health: ' + health);
-      flashFeedback.call(this, 0xff0000); // red
+      flashFeedback.call(this, 0xff0000);
       if (health <= 0) {
         gameOverSound.play();
         alert('Game Over!');
@@ -204,7 +199,7 @@ function create() {
         return;
       }
     }
-    answer.destroy();
+    quoteAnswered = true;
   }, null, this);
 
   this.updateControls = () => {
@@ -254,14 +249,22 @@ function flashFeedback(color) {
 
 function nextQuestion() {
   answers.clear(true, true);
-  currentQuote = Phaser.Utils.Array.GetRandom(quotes);
+  currentQuote = Phaser.Utils.Array.GetRandom
+    ? Phaser.Utils.Array.GetRandom(quotes)
+    : quotes[Math.floor(Math.random() * quotes.length)];
+
   questionText.setText('"' + currentQuote.quote + '"');
-  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
+
+  const shuffled = Phaser.Utils.Array.Shuffle
+    ? Phaser.Utils.Array.Shuffle(currentQuote.options)
+    : currentQuote.options.sort(() => Math.random() - 0.5);
+
+  shuffled.forEach((opt, i) => {
     const x = 200 + i * 180;
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(60 + (level - 1) * 20); // slower base speed
+    ans.setVelocityY(60 + (level - 1) * 20);
     this.add.text(x - 60, 40, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
