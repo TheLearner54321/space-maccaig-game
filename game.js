@@ -1,9 +1,115 @@
 
 // Space MacCaig Game - GitHub-Ready Version
 const quotes = [
-  { quote: 'The dwarf with his hands on backwards', correct: 'Grotesque imagery', options: ['Grotesque imagery', 'Personification', 'Symbolism'] },
-  { quote: 'slumped like a half-filled sack', correct: 'Simile', options: ['Metaphor', 'Alliteration', 'Simile'] }
-  // Add more quotes as needed
+  // Assisi
+  {
+    quote: 'The dwarf with his hands on backwards',
+    correct: 'Grotesque imagery',
+    options: ['Grotesque imagery', 'Personification', 'Symbolism']
+  },
+  {
+    quote: 'slumped like a half-filled sack',
+    correct: 'Simile',
+    options: ['Metaphor', 'Alliteration', 'Simile']
+  },
+  {
+    quote: 'tiny twisted legs from which sawdust might run',
+    correct: 'Alliteration',
+    options: ['Enjambment', 'Alliteration', 'Onomatopoeia']
+  },
+  {
+    quote: 'a priest explained how clever it was',
+    correct: 'Irony',
+    options: ['Irony', 'Tone', 'Hyperbole']
+  },
+
+  // Visiting Hour
+  {
+    quote: 'The hospital smell combs my nostrils',
+    correct: 'Personification',
+    options: ['Personification', 'Alliteration', 'Irony']
+  },
+  {
+    quote: 'I will not feel, I will not feel',
+    correct: 'Repetition',
+    options: ['Repetition', 'Enjambment', 'Metaphor']
+  },
+  {
+    quote: 'books that will not be read',
+    correct: 'Symbolism',
+    options: ['Symbolism', 'Tone', 'Irony']
+  },
+  {
+    quote: 'distance shrinks till there is none left',
+    correct: 'Metaphor',
+    options: ['Simile', 'Personification', 'Metaphor']
+  },
+
+  // Brooklyn Cop
+  {
+    quote: 'built like a gorilla',
+    correct: 'Simile',
+    options: ['Metaphor', 'Simile', 'Irony']
+  },
+  {
+    quote: 'thin tissue over violence',
+    correct: 'Metaphor',
+    options: ['Irony', 'Tone', 'Metaphor']
+  },
+  {
+    quote: 'who would be him',
+    correct: 'Rhetorical question',
+    options: ['Rhetorical question', 'Alliteration', 'Symbolism']
+  },
+  {
+    quote: 'see you, babe',
+    correct: 'Colloquialism',
+    options: ['Colloquialism', 'Imagery', 'Onomatopoeia']
+  },
+
+  // Basking Shark
+  {
+    quote: 'A rock where none should be',
+    correct: 'Metaphor',
+    options: ['Metaphor', 'Simile', 'Personification']
+  },
+  {
+    quote: 'room-sized monster with a matchbox brain',
+    correct: 'Contrast',
+    options: ['Alliteration', 'Contrast', 'Metaphor']
+  },
+  {
+    quote: 'he displaced more than water',
+    correct: 'Double meaning',
+    options: ['Irony', 'Double meaning', 'Tone']
+  },
+  {
+    quote: 'shook on a wrong branch of his family tree',
+    correct: 'Metaphor',
+    options: ['Metaphor', 'Simile', 'Hyperbole']
+  },
+
+  // Aunt Julia
+  {
+    quote: 'Aunt Julia spoke Gaelic',
+    correct: 'Cultural identity',
+    options: ['Cultural identity', 'Tone', 'Enjambment']
+  },
+  {
+    quote: 'she was buckets',
+    correct: 'Metaphor',
+    options: ['Simile', 'Metaphor', 'Personification']
+  },
+  {
+    quote: 'absolute darkness',
+    correct: 'Word choice',
+    options: ['Symbolism', 'Word choice', 'Alliteration']
+  },
+  {
+    quote: 'by the time I had learned a little',
+    correct: 'Tone of regret',
+    options: ['Irony', 'Tone of regret', 'Hyperbole']
+  }
 ];
 
 let score = 0, health = 3, level = 1;
