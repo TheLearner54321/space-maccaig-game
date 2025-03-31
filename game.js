@@ -123,6 +123,7 @@ let scoreText;
 let levelText;
 let healthText;
 let quoteAnswered = false;
+let feedbackOverlay;
 
 const config = {
   type: Phaser.AUTO,
@@ -141,7 +142,7 @@ const config = {
   }
 };
 
-const game = new Phaser.Game(config);
+let game = new Phaser.Game(config);
 
 function preload() {
   this.load.image('ship', 'assets/ship.png');
@@ -159,10 +160,10 @@ function create() {
   const player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
-  questionText = this.add.text(20, 20, '', { fontSize: '16px', fill: '#fff' });
-  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '16px', fill: '#fff' });
-  healthText = this.add.text(650, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
-  levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '16px', fill: '#fff' });
+  questionText = this.add.text(20, 20, '', { fontSize: '20px', fill: '#fff', wordWrap: { width: 760 } });
+  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
+  healthText = this.add.text(650, 40, 'Health: 3', { fontSize: '20px', fill: '#fff' });
+  levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '20px', fill: '#fff' });
 
   const cursors = this.input.keyboard.createCursorKeys();
   const shootSound = this.sound.add('shoot');
@@ -170,6 +171,9 @@ function create() {
   const wrongSound = this.sound.add('wrong');
   const gameOverSound = this.sound.add('gameover');
 
+  feedbackOverlay = this.add.rectangle(400, 300, 800, 600, 0x00ff00, 0);
+  feedbackOverlay.setDepth(10);
+  
   this.input.keyboard.on('keydown-SPACE', () => {
     const bullet = bullets.create(player.x, player.y - 20, 'bullet');
     bullet.setVelocityY(-300);
@@ -235,3 +239,25 @@ answers.getChildren().forEach(answer => {
     quoteAnswered = false;
     nextQuestion.call(this);
   }
+}
+
+function flashFeedback(color) {
+  feedbackOverlay.setFillStyle(color, 0.4);
+  this.time.delayedCall(150, () => {
+    feedbackOverlay.setFillStyle(color, 0);
+  });
+}
+
+function nextQuestion() {
+  answers.clear(true, true);
+  currentQuote = Phaser.Utils.Array.GetRandom(quotes);
+  questionText.setText('"' + currentQuote.quote + '"');
+  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
+    const x = 200 + i * 180;
+    const ans = answers.create(x, 0, 'book');
+    ans.setData('text', opt);
+    ans.setData('correct', opt === currentQuote.correct);
+    ans.setVelocityY(60 + (level - 1) * 20); // slower base speed
+    this.add.text(x - 60, 40, opt, { fontSize: '20px', fill: '#fff' });
+  });
+}
