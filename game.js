@@ -1,5 +1,4 @@
-
-// Space MacCaig Game - GitHub-Ready Version
+// Phaser 3 game based on your concept
 const quotes = [
   // Assisi
   {
