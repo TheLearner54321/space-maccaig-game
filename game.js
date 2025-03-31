@@ -112,7 +112,6 @@ const quotes = [
   }
 ];
 
-
 let score = 0;
 let level = 1;
 let health = 3;
@@ -123,12 +122,18 @@ let questionText;
 let scoreText;
 let levelText;
 let healthText;
+let quoteAnswered = false;
 
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  physics: { default: 'arcade', arcade: { debug: false } },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: false
+    }
+  },
   scene: {
     preload,
     create,
@@ -206,18 +211,27 @@ function create() {
 
 function update() {
   this.updateControls();
-}
 
-function nextQuestion() {
-  answers.clear(true, true);
-  currentQuote = Phaser.Utils.Array.GetRandom(quotes);
-  questionText.setText('"' + currentQuote.quote + '"');
-  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
-    const x = 200 + i * 200;
-    const ans = answers.create(x, 0, 'book');
-    ans.setData('text', opt);
-    ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(100 + (level - 1) * 30);
-    this.add.text(x - 40, 40, opt, { fontSize: '12px', fill: '#fff' });
+answers.getChildren().forEach(answer => {
+    if (answer.y > 600) {
+      if (answer.getData('correct')) {
+        health -= 1;
+        healthText.setText('Health: ' + health);
+        if (health <= 0) {
+          this.sound.play('gameover');
+          alert('Game Over!');
+          score = 0;
+          health = 3;
+          this.scene.restart();
+          return;
+        }
+      }
+      quoteAnswered = true;
+      answer.destroy();
+    }
   });
-}
+
+  if (quoteAnswered && answers.countActive(true) === 0) {
+    quoteAnswered = false;
+    nextQuestion.call(this);
+  }
