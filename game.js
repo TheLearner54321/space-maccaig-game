@@ -160,10 +160,11 @@ function create() {
   const player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
-  questionText = this.add.text(20, 20, '', { fontSize: '20px', fill: '#fff', wordWrap: { width: 760 } });
+
+  questionText = this.add.text(20, 20, '', { fontSize: '28px', fill: '#fff', wordWrap: { width: 760 } });
   scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
-  healthText = this.add.text(650, 40, 'Health: 3', { fontSize: '20px', fill: '#fff' });
-  levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '20px', fill: '#fff' });
+  healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '20px', fill: '#fff' });
+  levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '20px', fill: '#fff' });
 
   const cursors = this.input.keyboard.createCursorKeys();
   const shootSound = this.sound.add('shoot');
@@ -173,7 +174,7 @@ function create() {
 
   feedbackOverlay = this.add.rectangle(400, 300, 800, 600, 0x00ff00, 0);
   feedbackOverlay.setDepth(10);
-  
+
   this.input.keyboard.on('keydown-SPACE', () => {
     const bullet = bullets.create(player.x, player.y - 20, 'bullet');
     bullet.setVelocityY(-300);
@@ -182,23 +183,26 @@ function create() {
 
   this.physics.add.overlap(bullets, answers, (bullet, answer) => {
     bullet.destroy();
+    answer.destroy();
     if (answer.getData('correct')) {
       correctSound.play();
       score += 10;
-      level = Math.floor(score / 50) + 1;
       scoreText.setText('Score: ' + score);
+      level = Math.floor(score / 50) + 1;
       levelText.setText('Level: ' + level);
-      nextQuestion.call(this);
+      flashFeedback.call(this, 0x00ff00); // green
     } else {
       wrongSound.play();
       health -= 1;
       healthText.setText('Health: ' + health);
+      flashFeedback.call(this, 0xff0000); // red
       if (health <= 0) {
         gameOverSound.play();
         alert('Game Over!');
         score = 0;
         health = 3;
         this.scene.restart();
+        return;
       }
     }
     answer.destroy();
@@ -216,11 +220,12 @@ function create() {
 function update() {
   this.updateControls();
 
-answers.getChildren().forEach(answer => {
+  answers.getChildren().forEach(answer => {
     if (answer.y > 600) {
       if (answer.getData('correct')) {
         health -= 1;
         healthText.setText('Health: ' + health);
+        flashFeedback.call(this, 0xff0000);
         if (health <= 0) {
           this.sound.play('gameover');
           alert('Game Over!');
