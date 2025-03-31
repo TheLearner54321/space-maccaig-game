@@ -127,8 +127,8 @@ let feedbackOverlay;
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1000,
+  height: 800,
   physics: {
     default: 'arcade',
     arcade: { debug: false }
@@ -155,7 +155,7 @@ function create() {
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
 
-  questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: 760 } });
+  questionText = this.add.text(18, 18, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: 760 } });
   scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '18px', fill: '#fff' });
   healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '18px', fill: '#fff' });
   levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '18px', fill: '#fff' });
