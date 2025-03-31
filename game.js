@@ -155,10 +155,10 @@ function create() {
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
 
-  questionText = this.add.text(20, 20, '', { fontSize: '28px', fill: '#fff', wordWrap: { width: 760 } });
-  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
-  healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '20px', fill: '#fff' });
-  levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '20px', fill: '#fff' });
+  questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: 760 } });
+  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '18px', fill: '#fff' });
+  healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '18px', fill: '#fff' });
+  levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '18px', fill: '#fff' });
 
   const cursors = this.input.keyboard.createCursorKeys();
   const shootSound = this.sound.add('shoot');
