@@ -264,7 +264,7 @@ function nextQuestion() {
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(60 + (level - 1) * 20);
+    ans.setVelocityY(60 + (level - 1) * 20);  // slower base speed
     this.add.text(x - 60, 120, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
