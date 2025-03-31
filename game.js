@@ -112,9 +112,17 @@ const quotes = [
   }
 ];
 
-let score = 0, health = 3, level = 1;
-let bullets, answers, questionText, scoreText, healthText, levelText;
+
+let score = 0;
+let level = 1;
+let health = 3;
 let currentQuote;
+let bullets;
+let answers;
+let questionText;
+let scoreText;
+let levelText;
+let healthText;
 
 const config = {
   type: Phaser.AUTO,
