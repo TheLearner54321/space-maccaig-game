@@ -265,6 +265,6 @@ function nextQuestion() {
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(60 + (level - 1) * 20);  // slower base speed
-    this.add.text(x - 60, 180, opt, { fontSize: '20px', fill: '#fff' });
+    this.add.text(x - 60, yText, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
