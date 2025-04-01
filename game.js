@@ -1,5 +1,6 @@
-// Phaser 3 game based on your concept
+/ Phaser 3 game based on your concept
 let cursors;
+let player;
 const quotes = [
   // Assisi
   {
@@ -157,7 +158,7 @@ function preload() {
 
 function create() {
   this.add.tileSprite(400, 300, 800, 600, 'background');
-  const player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
+  player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
 
@@ -183,7 +184,6 @@ function create() {
 
   this.physics.add.overlap(bullets, answers, (bullet, answer) => {
     bullet.destroy();
-    // Removed redundant answer.destroy()
     if (answer.getData('correct')) {
       correctSound.play();
       score += 10;
@@ -206,6 +206,7 @@ function create() {
       }
     }
     answer.destroy();
+    quoteAnswered = true;
   }, null, this);
 
   this.updateControls = () => {
@@ -235,8 +236,8 @@ function update() {
           return;
         }
       }
-      quoteAnswered = true;
       answer.destroy();
+      quoteAnswered = true;
     }
   });
 
@@ -263,8 +264,7 @@ function nextQuestion() {
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(60 + (level - 1) * 20); // slower base speed
+    ans.setVelocityY(60 + (level - 1) * 20);
     this.add.text(x - 60, yText, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
-
