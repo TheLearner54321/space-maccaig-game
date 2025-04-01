@@ -103,6 +103,6 @@ function nextQuestion() {
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(100 + (level - 1) * 30);
-    this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
+    this.add.text(x - 40, 120, opt, { fontSize: '16px', fill: '#fff' });
   });
 }
