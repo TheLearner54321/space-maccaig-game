@@ -205,12 +205,6 @@ function create() {
     else player.setVelocityX(0);
   };
 
-  nextQuestion.call(this);
-}
-
-function update() {
-  this.updateControls();
-}
 
 function nextQuestion() {
   answers.clear(true, true);
