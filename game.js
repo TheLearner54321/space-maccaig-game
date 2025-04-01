@@ -1,5 +1,5 @@
-
 // Phaser 3 game based on your concept
+let cursors;
 const quotes = [
   // Assisi
   {
@@ -127,13 +127,19 @@ let feedbackOverlay;
 
 const config = {
   type: Phaser.AUTO,
-  width: 1000,
-  height: 800,
+  width: 800,
+  height: 600,
   physics: {
     default: 'arcade',
-    arcade: { debug: false }
+    arcade: {
+      debug: false
+    }
   },
-  scene: { preload, create, update }
+  scene: {
+    preload,
+    create,
+    update
+  }
 };
 
 let game = new Phaser.Game(config);
@@ -155,12 +161,12 @@ function create() {
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
 
-  questionText = this.add.text(18, 18, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: 760 } });
-  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '18px', fill: '#fff' });
-  healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '18px', fill: '#fff' });
-  levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '18px', fill: '#fff' });
+  questionText = this.add.text(20, 20, '', { fontSize: '28px', fill: '#fff', wordWrap: { width: 760 } });
+  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
+  healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '20px', fill: '#fff' });
+  levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '20px', fill: '#fff' });
 
-  const cursors = this.input.keyboard.createCursorKeys();
+  cursors = this.input.keyboard.createCursorKeys();
   const shootSound = this.sound.add('shoot');
   const correctSound = this.sound.add('correct');
   const wrongSound = this.sound.add('wrong');
@@ -177,19 +183,19 @@ function create() {
 
   this.physics.add.overlap(bullets, answers, (bullet, answer) => {
     bullet.destroy();
-    answer.destroy();
+    // Removed redundant answer.destroy()
     if (answer.getData('correct')) {
       correctSound.play();
       score += 10;
       scoreText.setText('Score: ' + score);
       level = Math.floor(score / 50) + 1;
       levelText.setText('Level: ' + level);
-      flashFeedback.call(this, 0x00ff00);
+      flashFeedback.call(this, 0x00ff00); // green
     } else {
       wrongSound.play();
       health -= 1;
       healthText.setText('Health: ' + health);
-      flashFeedback.call(this, 0xff0000);
+      flashFeedback.call(this, 0xff0000); // red
       if (health <= 0) {
         gameOverSound.play();
         alert('Game Over!');
@@ -199,7 +205,7 @@ function create() {
         return;
       }
     }
-    quoteAnswered = true;
+    answer.destroy();
   }, null, this);
 
   this.updateControls = () => {
@@ -249,22 +255,16 @@ function flashFeedback(color) {
 
 function nextQuestion() {
   answers.clear(true, true);
-  currentQuote = Phaser.Utils.Array.GetRandom
-    ? Phaser.Utils.Array.GetRandom(quotes)
-    : quotes[Math.floor(Math.random() * quotes.length)];
-
+  currentQuote = Phaser.Utils.Array.GetRandom(quotes);
   questionText.setText('"' + currentQuote.quote + '"');
-
-  const shuffled = Phaser.Utils.Array.Shuffle
-    ? Phaser.Utils.Array.Shuffle(currentQuote.options)
-    : currentQuote.options.sort(() => Math.random() - 0.5);
-
-  shuffled.forEach((opt, i) => {
+  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
     const x = 200 + i * 180;
+    const yText = 120;
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(60 + (level - 1) * 20);  // slower base speed
-    this.add.text(x - 60, 140, opt, { fontSize: '20px', fill: '#fff' });
+    ans.setVelocityY(60 + (level - 1) * 20); // slower base speed
+    this.add.text(x - 60, yText, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
+
