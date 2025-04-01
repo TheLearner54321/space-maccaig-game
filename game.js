@@ -125,10 +125,6 @@ let healthText;
 let quoteAnswered = false;
 let feedbackOverlay;
 let answerTexts = [];
-function updateControls() {
-  if (cursors.left.isDown) player.setVelocityX(-200);
-  else if (cursors.right.isDown) player.setVelocityX(200);
-  else player.setVelocityX(0);
 
 const config = {
   type: Phaser.AUTO,
