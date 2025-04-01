@@ -178,27 +178,6 @@ function create() {
     shootSound.play();
   });
 
-  this.physics.add.overlap(bullets, answers, (bullet, answer) => {
-    bullet.destroy();
-    if (answer.getData('correct')) {
-      correctSound.play();
-      score += 10;
-      level = Math.floor(score / 50) + 1;
-      scoreText.setText('Score: ' + score);
-      levelText.setText('Level: ' + level);
-      nextQuestion.call(this);
-    } else {
-      wrongSound.play();
-      health -= 1;
-      healthText.setText('Health: ' + health);
-      if (health <= 0) {
-        gameOverSound.play();
-        alert('Game Over!');
-        score = 0;
-        health = 3;
-        this.scene.restart();
-      }
-
   this.updateControls = () => {
     if (cursors.left.isDown) player.setVelocityX(-200);
     else if (cursors.right.isDown) player.setVelocityX(200);
