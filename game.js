@@ -1,4 +1,3 @@
-
 // Phaser 3 game based on your concept
 const quotes = [
   // Assisi
@@ -265,6 +264,6 @@ function nextQuestion() {
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(60 + (level - 1) * 20);
-    this.add.text(x - 60, 40, opt, { fontSize: '20px', fill: '#fff' });
+    this.add.text(x - 60, 120, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
