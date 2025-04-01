@@ -202,9 +202,6 @@ function create() {
         health = 3;
         this.scene.restart();
       }
-    }
-    answer.destroy();
-  }, null, this);
 
   this.updateControls = () => {
     if (cursors.left.isDown) player.setVelocityX(-200);
