@@ -114,7 +114,7 @@ const quotes = [
 let score = 0, health = 3, level = 1;
 let bullets, answers, questionText, scoreText, healthText, levelText, answerTexts = [];
 let currentQuote;
-let questionTimer;
+let questionTimer = null; // Initial setup.
 
 // Ensure only one declaration of the config variable
 const config = {
@@ -233,6 +233,20 @@ function update() {
       bullet.destroy();
     }
   });
+}
+
+function startQuestionTimer() {
+    questionTimer = setTimeout(() => {
+        console.log("Time's up for this question!");
+        nextQuestion.call(this); // Move to the next question after timeout
+    }, 10000); // 10-second timer for questions
+}
+
+function stopQuestionTimer() {
+    if (questionTimer) {
+        clearTimeout(questionTimer); // Clear the timer
+        questionTimer = null; // Reset the variable
+    }
 }
 
 function nextQuestion() {
