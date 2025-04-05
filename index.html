@@ -9,14 +9,100 @@
       margin: 0;
       background: black;
       overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+    }
+
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Styles for mobile devices */
+    @media only screen and (max-width: 600px) {
+      body {
+        font-size: 12px;
+      }
+
+      .game-container {
+        width: 100%;
+        height: auto;
+      }
+
+      #controls {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px 0;
+      }
+
+      #controls button {
+        background-color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #000;
+        cursor: pointer;
+      }
+
+      #controls button:active {
+        background-color: #ccc;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="game-container">
+    <canvas id="gameCanvas"></canvas>
+  </div>
+  <div id="controls">
+    <button id="leftBtn">Left</button>
+    <button id="shootBtn">Shoot</button>
+    <button id="rightBtn">Right</button>
+  </div>
   <!-- Phaser Library -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
-
   <!-- Your Game Script -->
   <script src="game.js"></script>
+  <script>
+    // JavaScript to handle touch controls
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+    const shootBtn = document.getElementById('shootBtn');
+
+    leftBtn.addEventListener('touchstart', () => {
+      // Handle left movement
+    });
+
+    rightBtn.addEventListener('touchstart', () => {
+      // Handle right movement
+    });
+
+    shootBtn.addEventListener('touchstart', () => {
+      // Handle shooting
+    });
+
+    // Add touchend event listeners to stop movement when touch ends
+    leftBtn.addEventListener('touchend', () => {
+      // Stop left movement
+    });
+
+    rightBtn.addEventListener('touchend', () => {
+      // Stop right movement
+    });
+  </script>
 </body>
 </html>
