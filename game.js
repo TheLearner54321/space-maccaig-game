@@ -269,5 +269,5 @@ function nextQuestion() {
       this.sound.play('wrong');
       nextQuestion.call(this);
     }
-  }, 10000); // 10 seconds for each question
+  }, 10000); // 2 seconds for each question
 }
