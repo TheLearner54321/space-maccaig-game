@@ -209,6 +209,26 @@ function create() {
 
 function update() {
   this.updateControls();
+
+  // Check if any answer has moved off the screen
+  answers.getChildren().forEach(answer => {
+    if (answer.y > this.sys.game.config.height) {
+      answer.destroy();
+      answerTexts.forEach(txt => txt.destroy());
+      health -= 1;
+      healthText.setText('Health: ' + health);
+      if (health <= 0) {
+        this.sound.play('gameover');
+        alert('Game Over!');
+        score = 0;
+        health = 3;
+        this.scene.restart();
+      } else {
+        this.sound.play('wrong');
+        nextQuestion.call(this);
+      }
+    }
+  });
 }
 
 function nextQuestion() {
