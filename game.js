@@ -127,6 +127,22 @@ function update() {
   // update game logic
 }
 
+function preload() {
+  console.log('Preloading assets...');
+  this.load.image('ship', 'assets/ship.png');
+  // Other load calls...
+}
+
+function create() {
+  console.log('Creating game objects...');
+  // Game setup code...
+}
+
+function update() {
+  console.log('Updating game logic...');
+  // Game update logic...
+}
+
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -137,7 +153,10 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-let questionTimer;
+window.addEventListener('resize', () => {
+  game.scale.resize(window.innerWidth, window.innerHeight);
+  // Adjust game elements if necessary
+});
 
 function preload() {
   this.load.image('ship', 'assets/ship.png');
@@ -212,7 +231,6 @@ function create() {
 function update() {
   this.updateControls();
 
-  // Check if any answer has moved off the screen
   answers.getChildren().forEach(answer => {
     if (answer.y > this.sys.game.config.height) {
       answer.destroy();
@@ -232,7 +250,6 @@ function update() {
     }
   });
 
-  // Check if any bullet has moved off the screen
   bullets.getChildren().forEach(bullet => {
     if (bullet.y < 0) {
       bullet.destroy();
@@ -257,12 +274,10 @@ function nextQuestion() {
     answerTexts.push(label);
   });
 
-  // Clear any existing timer
   if (questionTimer) {
     clearTimeout(questionTimer);
   }
 
-  // Set a new timer for the next question
   questionTimer = setTimeout(() => {
     health -= 1;
     healthText.setText('Health: ' + health);
@@ -276,21 +291,8 @@ function nextQuestion() {
       this.sound.play('wrong');
       nextQuestion.call(this);
     }
-  }, 1000); // 1 seconds for each question
+  }, 1000);
 }
-
-// Phaser configuration
-const config = {
-  type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight,
-  physics: { default: 'arcade' },
-  scene: { preload, create, update }
-};
-
-const game = new Phaser.Game(config);
-
-// Resize the game when the window is resized
 window.addEventListener('resize', () => {
   game.scale.resize(window.innerWidth, window.innerHeight);
   // Adjust game elements if necessary
