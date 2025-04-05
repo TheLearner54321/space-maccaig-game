@@ -115,6 +115,18 @@ let score = 0, health = 3, level = 1;
 let bullets, answers, questionText, scoreText, healthText, levelText, answerTexts = [];
 let currentQuote;
 
+function preload() {
+  // preload assets
+}
+
+function create() {
+  // create game objects
+}
+
+function update() {
+  // update game logic
+}
+
 const config = {
   type: Phaser.AUTO,
   width: 800,
