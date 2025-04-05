@@ -124,7 +124,6 @@ let levelText;
 let healthText;
 let quoteAnswered = false;
 let feedbackOverlay;
-let answerTexts = [];
 
 const config = {
   type: Phaser.AUTO,
@@ -132,18 +131,12 @@ const config = {
   height: 600,
   physics: {
     default: 'arcade',
-    arcade: {
-      debug: false
-    }
+    arcade: { debug: false }
   },
-  scene: {
-    preload,
-    create,
-    update
-  }
+  scene: { preload, create, update }
 };
 
-const game = new Phaser.Game(config);
+let game = new Phaser.Game(config);
 
 function preload() {
   this.load.image('ship', 'assets/ship.png');
@@ -161,10 +154,11 @@ function create() {
   const player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
-  questionText = this.add.text(20, 20, '', { fontSize: '16px', fill: '#fff' });
-  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '18px', fill: '#fff' });
-  healthText = this.add.text(650, 40, 'Health: 3', { fontSize: '18px', fill: '#fff' });
-  levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '18px', fill: '#fff' });
+
+  questionText = this.add.text(20, 20, '', { fontSize: '20px', fill: '#fff', wordWrap: { width: 760 } });
+  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
+  healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '20px', fill: '#fff' });
+  levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '20px', fill: '#fff' });
 
   const cursors = this.input.keyboard.createCursorKeys();
   const shootSound = this.sound.add('shoot');
@@ -172,11 +166,41 @@ function create() {
   const wrongSound = this.sound.add('wrong');
   const gameOverSound = this.sound.add('gameover');
 
+  feedbackOverlay = this.add.rectangle(400, 300, 800, 600, 0x00ff00, 0);
+  feedbackOverlay.setDepth(10);
+
   this.input.keyboard.on('keydown-SPACE', () => {
     const bullet = bullets.create(player.x, player.y - 20, 'bullet');
     bullet.setVelocityY(-300);
     shootSound.play();
   });
+
+  this.physics.add.overlap(bullets, answers, (bullet, answer) => {
+    bullet.destroy();
+    answer.destroy();
+    if (answer.getData('correct')) {
+      correctSound.play();
+      score += 10;
+      scoreText.setText('Score: ' + score);
+      level = Math.floor(score / 50) + 1;
+      levelText.setText('Level: ' + level);
+      flashFeedback.call(this, 0x00ff00);
+    } else {
+      wrongSound.play();
+      health -= 1;
+      healthText.setText('Health: ' + health);
+      flashFeedback.call(this, 0xff0000);
+      if (health <= 0) {
+        gameOverSound.play();
+        alert('Game Over!');
+        score = 0;
+        health = 3;
+        this.scene.restart();
+        return;
+      }
+    }
+    quoteAnswered = true;
+  }, null, this);
 
   this.updateControls = () => {
     if (cursors.left.isDown) player.setVelocityX(-200);
@@ -184,17 +208,63 @@ function create() {
     else player.setVelocityX(0);
   };
 
+  nextQuestion.call(this);
+}
+
+function update() {
+  this.updateControls();
+
+  answers.getChildren().forEach(answer => {
+    if (answer.y > 600) {
+      if (answer.getData('correct')) {
+        health -= 1;
+        healthText.setText('Health: ' + health);
+        flashFeedback.call(this, 0xff0000);
+        if (health <= 0) {
+          this.sound.play('gameover');
+          alert('Game Over!');
+          score = 0;
+          health = 3;
+          this.scene.restart();
+          return;
+        }
+      }
+      quoteAnswered = true;
+      answer.destroy();
+    }
+  });
+
+  if (quoteAnswered && answers.countActive(true) === 0) {
+    quoteAnswered = false;
+    nextQuestion.call(this);
+  }
+}
+
+function flashFeedback(color) {
+  feedbackOverlay.setFillStyle(color, 0.4);
+  this.time.delayedCall(150, () => {
+    feedbackOverlay.setFillStyle(color, 0);
+  });
+}
 
 function nextQuestion() {
   answers.clear(true, true);
-  currentQuote = Phaser.Utils.Array.GetRandom(quotes);
+  currentQuote = Phaser.Utils.Array.GetRandom
+    ? Phaser.Utils.Array.GetRandom(quotes)
+    : quotes[Math.floor(Math.random() * quotes.length)];
+
   questionText.setText('"' + currentQuote.quote + '"');
-  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
-    const x = 200 + i * 200;
+
+  const shuffled = Phaser.Utils.Array.Shuffle
+    ? Phaser.Utils.Array.Shuffle(currentQuote.options)
+    : currentQuote.options.sort(() => Math.random() - 0.5);
+
+  shuffled.forEach((opt, i) => {
+    const x = 200 + i * 180;
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(100 + (level - 1) * 30);
-    this.add.text(x - 40, 120, opt, { fontSize: '16px', fill: '#fff' });
+    ans.setVelocityY(60 + (level - 1) * 20);
+    this.add.text(x - 60, 40, opt, { fontSize: '20px', fill: '#fff' });
   });
 }
