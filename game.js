@@ -1,6 +1,6 @@
-// Space MacCaig Game - GitHub-Ready Version
+// Phaser 3 game based on your concept
 const quotes = [
- // Assisi
+  // Assisi
   {
     quote: 'The dwarf with his hands on backwards',
     correct: 'Grotesque imagery',
@@ -109,7 +109,6 @@ const quotes = [
     correct: 'Tone of regret',
     options: ['Irony', 'Tone of regret', 'Hyperbole']
   }
-
 ];
 
 let score = 0;
@@ -155,7 +154,7 @@ function create() {
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
 
-  questionText = this.add.text(20, 20, '', { fontSize: '20px', fill: '#fff', wordWrap: { width: 760 } });
+  questionText = this.add.text(20, 20, '', { fontSize: '28px', fill: '#fff', wordWrap: { width: 760 } });
   scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
   healthText = this.add.text(650, 50, 'Health: 3', { fontSize: '20px', fill: '#fff' });
   levelText = this.add.text(20, 60, 'Level: 1', { fontSize: '20px', fill: '#fff' });
