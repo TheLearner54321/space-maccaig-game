@@ -137,6 +137,8 @@ const config = {
 
 const game = new Phaser.Game(config);
 
+let questionTimer;
+
 function preload() {
   this.load.image('ship', 'assets/ship.png');
   this.load.image('bullet', 'assets/bullet.png');
@@ -247,4 +249,25 @@ function nextQuestion() {
     const label = this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
     answerTexts.push(label);
   });
+
+  // Clear any existing timer
+  if (questionTimer) {
+    clearTimeout(questionTimer);
+  }
+
+  // Set a new timer for the next question
+  questionTimer = setTimeout(() => {
+    health -= 1;
+    healthText.setText('Health: ' + health);
+    if (health <= 0) {
+      this.sound.play('gameover');
+      alert('Game Over!');
+      score = 0;
+      health = 3;
+      this.scene.restart();
+    } else {
+      this.sound.play('wrong');
+      nextQuestion.call(this);
+    }
+  }, 10000); // 10 seconds for each question
 }
