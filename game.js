@@ -129,8 +129,8 @@ function update() {
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
   physics: { default: 'arcade' },
   scene: { preload, create, update }
 };
