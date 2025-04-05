@@ -195,10 +195,6 @@ function create() {
   nextQuestion.call(this);
 }
 
-function update() {
-  this.updateControls();
-}
-
 function nextQuestion() {
   answers.clear(true, true);
   currentQuote = Phaser.Utils.Array.GetRandom(quotes);
