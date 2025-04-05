@@ -114,35 +114,9 @@ const quotes = [
 let score = 0, health = 3, level = 1;
 let bullets, answers, questionText, scoreText, healthText, levelText, answerTexts = [];
 let currentQuote;
+let questionTimer;
 
-function preload() {
-  // preload assets
-}
-
-function create() {
-  // create game objects
-}
-
-function update() {
-  // update game logic
-}
-
-function preload() {
-  console.log('Preloading assets...');
-  this.load.image('ship', 'assets/ship.png');
-  // Other load calls...
-}
-
-function create() {
-  console.log('Creating game objects...');
-  // Game setup code...
-}
-
-function update() {
-  console.log('Updating game logic...');
-  // Game update logic...
-}
-
+// Ensure only one declaration of the config variable
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -156,9 +130,11 @@ const game = new Phaser.Game(config);
 window.addEventListener('resize', () => {
   game.scale.resize(window.innerWidth, window.innerHeight);
   // Adjust game elements if necessary
+  console.log('Window resized: ', window.innerWidth, window.innerHeight);
 });
 
 function preload() {
+  console.log('Preloading assets...');
   this.load.image('ship', 'assets/ship.png');
   this.load.image('bullet', 'assets/bullet.png');
   this.load.image('book', 'assets/book.png');
@@ -170,6 +146,7 @@ function preload() {
 }
 
 function create() {
+  console.log('Creating game objects...');
   this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 'background');
   const player = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
@@ -229,6 +206,7 @@ function create() {
 }
 
 function update() {
+  console.log('Updating game logic...');
   this.updateControls();
 
   answers.getChildren().forEach(answer => {
@@ -258,6 +236,7 @@ function update() {
 }
 
 function nextQuestion() {
+  console.log('Next question...');
   answers.clear(true, true);
   answerTexts.forEach(txt => txt.destroy());
   answerTexts = [];
@@ -271,29 +250,4 @@ function nextQuestion() {
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(100 + (level - 1) * 30);
     const label = this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
-    answerTexts.push(label);
-  });
-
-  if (questionTimer) {
-    clearTimeout(questionTimer);
-  }
-
-  questionTimer = setTimeout(() => {
-    health -= 1;
-    healthText.setText('Health: ' + health);
-    if (health <= 0) {
-      this.sound.play('gameover');
-      alert('Game Over!');
-      score = 0;
-      health = 3;
-      this.scene.restart();
-    } else {
-      this.sound.play('wrong');
-      nextQuestion.call(this);
-    }
-  }, 1000);
-}
-window.addEventListener('resize', () => {
-  game.scale.resize(window.innerWidth, window.innerHeight);
-  // Adjust game elements if necessary
-});
+    answer* ▋
