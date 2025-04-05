@@ -231,6 +231,13 @@ function update() {
       }
     }
   });
+
+  // Check if any bullet has moved off the screen
+  bullets.getChildren().forEach(bullet => {
+    if (bullet.y < 0) {
+      bullet.destroy();
+    }
+  });
 }
 
 function nextQuestion() {
@@ -269,5 +276,5 @@ function nextQuestion() {
       this.sound.play('wrong');
       nextQuestion.call(this);
     }
-  }, 10000); // 2 seconds for each question
+  }, 1000); // 1 seconds for each question
 }
