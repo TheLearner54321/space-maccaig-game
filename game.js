@@ -151,14 +151,14 @@ function preload() {
 }
 
 function create() {
-  this.add.tileSprite(400, 300, 800, 600, 'background');
-  const player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
+  this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 'background');
+  const player = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
 
-  questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: 760 } });
-  scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '16px', fill: '#fff' });
-  healthText = this.add.text(650, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
+  questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: this.scale.width - 40 } });
+  scoreText = this.add.text(this.scale.width - 150, 20, 'Score: 0', { fontSize: '16px', fill: '#fff' });
+  healthText = this.add.text(this.scale.width - 150, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
   levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '16px', fill: '#fff' });
 
   const cursors = this.input.keyboard.createCursorKeys();
@@ -278,3 +278,20 @@ function nextQuestion() {
     }
   }, 1000); // 1 seconds for each question
 }
+
+// Phaser configuration
+const config = {
+  type: Phaser.AUTO,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  physics: { default: 'arcade' },
+  scene: { preload, create, update }
+};
+
+const game = new Phaser.Game(config);
+
+// Resize the game when the window is resized
+window.addEventListener('resize', () => {
+  game.scale.resize(window.innerWidth, window.innerHeight);
+  // Adjust game elements if necessary
+});
