@@ -112,19 +112,15 @@ const quotes = [
 ];
 
 let score = 0, health = 3, level = 1;
-let bullets, answers, questionText, scoreText, healthText, levelText;
+let bullets, answers, questionText, scoreText, healthText, levelText, answerTexts = [];
 let currentQuote;
 
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  physics: { default: 'arcade', arcade: { debug: false } },
-  scene: {
-    preload,
-    create,
-    update
-  }
+  physics: { default: 'arcade' },
+  scene: { preload, create, update }
 };
 
 const game = new Phaser.Game(config);
@@ -145,7 +141,8 @@ function create() {
   const player = this.physics.add.image(400, 550, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
   answers = this.physics.add.group();
-  questionText = this.add.text(20, 20, '', { fontSize: '16px', fill: '#fff' });
+
+  questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: 760 } });
   scoreText = this.add.text(650, 20, 'Score: 0', { fontSize: '16px', fill: '#fff' });
   healthText = this.add.text(650, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
   levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '16px', fill: '#fff' });
@@ -164,6 +161,7 @@ function create() {
 
   this.physics.add.overlap(bullets, answers, (bullet, answer) => {
     bullet.destroy();
+    answerTexts.forEach(txt => txt.destroy());
     if (answer.getData('correct')) {
       correctSound.play();
       score += 10;
@@ -181,6 +179,8 @@ function create() {
         score = 0;
         health = 3;
         this.scene.restart();
+      } else {
+        nextQuestion.call(this);
       }
     }
     answer.destroy();
@@ -195,16 +195,24 @@ function create() {
   nextQuestion.call(this);
 }
 
+function update() {
+  this.updateControls();
+}
+
 function nextQuestion() {
   answers.clear(true, true);
+  answerTexts.forEach(txt => txt.destroy());
+  answerTexts = [];
   currentQuote = Phaser.Utils.Array.GetRandom(quotes);
   questionText.setText('"' + currentQuote.quote + '"');
+
   Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
     const x = 200 + i * 200;
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(100 + (level - 1) * 30);
-    this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
+    const label = this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
+    answerTexts.push(label);
   });
 }
