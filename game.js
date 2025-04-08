@@ -264,4 +264,4 @@ function nextQuestion() {
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(100 + (level - 1) * 30);
     const label = this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
-    answer* ▋
+    answer*
