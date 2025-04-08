@@ -162,6 +162,30 @@ function create() {
   // Collision logic
   this.physics.add.overlap(bullets, answers, handleAnswer, null, this);
 
+  document.addEventListener('keydown', function(event) {
+    // Remove or comment out the handling for the arrow keys and shoot key
+    switch(event.keyCode) {
+        case 37: // Left arrow key
+            // Remove or comment out the code for left arrow key
+            break;
+        case 38: // Up arrow key
+            // Remove or comment out the code for up arrow key
+            break;
+        case 39: // Right arrow key
+            // Remove or comment out the code for right arrow key
+            break;
+        case 40: // Down arrow key
+            // Remove or comment out the code for down arrow key
+            break;
+        case 32: // Spacebar (shoot)
+            // Remove or comment out the code for shoot key
+            break;
+        default:
+            // Handle other keys if necessary
+            break;
+    }
+});
+
   nextQuestion.call(this);
 }
 
