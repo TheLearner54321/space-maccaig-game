@@ -112,11 +112,10 @@ const quotes = [
 ];
 
 let score = 0, health = 3, level = 1;
-let bullets, answers, questionText, scoreText, healthText, levelText, answerTexts = [];
-let currentQuote;
-let questionTimer = null; // Initial setup.
+let bullets, answers, questionText, scoreText, healthText, levelText;
+let currentQuote, answerTexts = [], questionTimer = null;
 
-// Ensure only one declaration of the config variable
+// Game Config
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -127,39 +126,7 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-create() {
-  // Add background with correct depth
-  this.bg = this.add.tileSprite(
-    this.scale.width / 2,
-    this.scale.height / 2,
-    this.scale.width,
-    this.scale.height,
-    'background'
-  );
-  this.bg.setDepth(-1);
-
-  // Setup player and other game elements...
-  ship = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship');
-  bullets = this.physics.add.group({ classType: Phaser.GameObjects.Image });
-  answers = this.physics.add.group();
-  answerTexts = [];
-
-  // Input buttons
-  this.add.image(50, this.scale.height - 50, 'left').setInteractive().on('pointerdown', moveLeft);
-  this.add.image(this.scale.width - 50, this.scale.height - 50, 'right').setInteractive().on('pointerdown', moveRight);
-  this.add.image(this.scale.width / 2, this.scale.height - 50, 'shoot').setInteractive().on('pointerdown', shoot);
-
-  nextQuestion.call(this);
-}
-
-window.addEventListener('resize', () => {
-  game.scale.resize(window.innerWidth, window.innerHeight);
-  // Adjust game elements if necessary
-  console.log('Window resized: ', window.innerWidth, window.innerHeight);
-});
-
 function preload() {
-  console.log('Preloading assets...');
   this.load.image('ship', 'assets/ship.png');
   this.load.image('bullet', 'assets/bullet.png');
   this.load.image('book', 'assets/book.png');
@@ -171,7 +138,6 @@ function preload() {
 }
 
 function create() {
-  console.log('Creating game objects...');
   this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 'background');
   const player = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship').setCollideWorldBounds(true);
   bullets = this.physics.add.group();
@@ -182,151 +148,74 @@ function create() {
   healthText = this.add.text(this.scale.width - 150, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
   levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '16px', fill: '#fff' });
 
-  const cursors = this.input.keyboard.createCursorKeys();
-  const shootSound = this.sound.add('shoot');
-  const correctSound = this.sound.add('correct');
-  const wrongSound = this.sound.add('wrong');
-  const gameOverSound = this.sound.add('gameover');
-
   this.input.keyboard.on('keydown-SPACE', () => {
     const bullet = bullets.create(player.x, player.y - 20, 'bullet');
     bullet.setVelocityY(-300);
-    shootSound.play();
+    this.sound.play('shoot');
   });
 
-  this.physics.add.overlap(bullets, answers, (bullet, answer) => {
-    bullet.destroy();
-    answerTexts.forEach(txt => txt.destroy());
-    if (answer.getData('correct')) {
-      correctSound.play();
-      score += 10;
-      level = Math.floor(score / 50) + 1;
-      scoreText.setText('Score: ' + score);
-      levelText.setText('Level: ' + level);
-      nextQuestion.call(this);
-    } else {
-      wrongSound.play();
-      health -= 1;
-      healthText.setText('Health: ' + health);
-      if (health <= 0) {
-        gameOverSound.play();
-        alert('Game Over!');
-        score = 0;
-        health = 3;
-        this.scene.restart();
-      } else {
-        nextQuestion.call(this);
-      }
-    }
-    answer.destroy();
-  }, null, this);
-
-  this.updateControls = () => {
-    if (cursors.left.isDown) player.setVelocityX(-200);
-    else if (cursors.right.isDown) player.setVelocityX(200);
-    else player.setVelocityX(0);
-  };
+  this.physics.add.overlap(bullets, answers, handleAnswer, null, this);
 
   nextQuestion.call(this);
 }
 
 function update() {
-  console.log('Updating game logic...');
-  this.updateControls();
-
   answers.getChildren().forEach(answer => {
     if (answer.y > this.sys.game.config.height) {
       answer.destroy();
-      answerTexts.forEach(txt => txt.destroy());
       health -= 1;
       healthText.setText('Health: ' + health);
       if (health <= 0) {
         this.sound.play('gameover');
         alert('Game Over!');
-        score = 0;
-        health = 3;
         this.scene.restart();
-      } else {
-        this.sound.play('wrong');
-        nextQuestion.call(this);
       }
     }
   });
 
   bullets.getChildren().forEach(bullet => {
-    if (bullet.y < 0) {
-      bullet.destroy();
-    }
+    if (bullet.y < 0) bullet.destroy();
   });
 }
 
-function startQuestionTimer() {
-    questionTimer = setTimeout(() => {
-        console.log("Time's up for this question!");
-        nextQuestion.call(this); // Move to the next question after timeout
-    }, 10000); // 10-second timer for questions
-}
-
-function stopQuestionTimer() {
-    if (questionTimer) {
-        clearTimeout(questionTimer); // Clear the timer
-        questionTimer = null; // Reset the variable
-    }
-}
-
 function nextQuestion() {
-  console.log('Next question...');
   answers.clear(true, true);
   answerTexts.forEach(txt => txt.destroy());
   answerTexts = [];
+  
   currentQuote = Phaser.Utils.Array.GetRandom(quotes);
   questionText.setText('"' + currentQuote.quote + '"');
 
-Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
-  const x = 200 + i * 200;
-  const ans = answers.create(x, 0, 'book');
-  ans.setData('text', opt);
-  ans.setData('correct', opt === currentQuote.correct);
-  ans.setVelocityY(100 + (level - 1) * 30);
-
-  const label = this.add.text(x - 40, 120, opt, {
-    fontSize: '12px',
-    fill: '#fff'
-  });
-  answerTexts.push(label); // Add this line to store labels for cleanup
-});
-
-function nextQuestion() {
-  // Clear previous answer texts
-  answerTexts.forEach(txt => txt.destroy());
-  answerTexts = [];
-
-  if (level > quotes.length) {
-    // Game over / victory
-    this.add.text(this.scale.width / 2 - 100, this.scale.height / 2, 'You Win!', {
-      fontSize: '32px',
-      fill: '#fff'
-    });
-    return;
-  }
-
-  const currentQuote = quotes[level - 1];
-  const spacing = this.scale.width / 4;
-  const startX = spacing;
-
   Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
-    const x = startX + i * spacing;
-
+    const x = 200 + i * 200;
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(100 + (level - 1) * 30);
 
-    const label = this.add.text(x - 40, 120, opt, {
-      fontSize: '12px',
-      fill: '#fff',
-      wordWrap: { width: spacing - 20 }
-    });
+    const label = this.add.text(x - 40, ans.y + 30, opt, { fontSize: '12px', fill: '#fff' });
     answerTexts.push(label);
   });
+}
+
+function handleAnswer(bullet, answer) {
+  bullet.destroy();
+  if (answer.getData('correct')) {
+    this.sound.play('correct');
+    score += 10;
+    level = Math.floor(score / 50) + 1;
+    scoreText.setText('Score: ' + score);
+    levelText.setText('Level: ' + level);
+    nextQuestion.call(this);
+  } else {
+    this.sound.play('wrong');
+    health -= 1;
+    healthText.setText('Health: ' + health);
+    if (health <= 0) {
+      this.sound.play('gameover');
+      alert('Game Over!');
+      this.scene.restart();
+    }
+  }
+  answer.destroy();
 }
