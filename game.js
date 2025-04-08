@@ -138,53 +138,35 @@ function preload() {
 }
 
 function create() {
-  // Add background
-  this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 'background');
+    // Add background
+    this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 'background');
 
-  // Player setup
-  const player = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship').setCollideWorldBounds(true);
-  bullets = this.physics.add.group();
-  answers = this.physics.add.group();
+    // Player setup
+    const player = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship').setCollideWorldBounds(true);
+    bullets = this.physics.add.group();
+    answers = this.physics.add.group();
 
-  // UI Text
-  questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: this.scale.width - 40 } });
-  scoreText = this.add.text(this.scale.width - 150, 20, 'Score: 0', { fontSize: '16px', fill: '#fff' });
-  healthText = this.add.text(this.scale.width - 150, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
-  levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '16px', fill: '#fff' });
+    // UI Text
+    questionText = this.add.text(20, 20, '', { fontSize: '18px', fill: '#fff', wordWrap: { width: this.scale.width - 40 } });
+    scoreText = this.add.text(this.scale.width - 150, 20, 'Score: 0', { fontSize: '16px', fill: '#fff' });
+    healthText = this.add.text(this.scale.width - 150, 40, 'Health: 3', { fontSize: '16px', fill: '#fff' });
+    levelText = this.add.text(20, 50, 'Level: 1', { fontSize: '16px', fill: '#fff' });
 
-  // Shooting logic
-  this.input.keyboard.on('keydown-SPACE', () => {
-    const bullet = bullets.create(player.x, player.y - 20, 'bullet');
-    bullet.setVelocityY(-300);
-    this.sound.play('shoot');
-  });
+    // Keyboard controls
+    this.cursors = this.input.keyboard.createCursorKeys();
 
-  // Collision logic
-  this.physics.add.overlap(bullets, answers, handleAnswer, null, this);
+    // Shooting logic
+    this.input.keyboard.on('keydown-SPACE', () => {
+        const bullet = bullets.create(player.x, player.y - 20, 'bullet');
+        bullet.setVelocityY(-300);
+        this.sound.play('shoot');
+    });
 
-  document.addEventListener('keydown', function(event) {
-    // Remove or comment out the handling for the arrow keys and shoot key
-    switch(event.keyCode) {
-        case 37: // Left arrow key
-            // Remove or comment out the code for left arrow key
-            break;
-        case 38: // Up arrow key
-            // Remove or comment out the code for up arrow key
-            break;
-        case 39: // Right arrow key
-            // Remove or comment out the code for right arrow key
-            break;
-        case 40: // Down arrow key
-            // Remove or comment out the code for down arrow key
-            break;
-        case 32: // Spacebar (shoot)
-            // Remove or comment out the code for shoot key
-            break;
-        default:
-            // Handle other keys if necessary
-            break;
-    }
-});
+    // Collision logic
+    this.physics.add.overlap(bullets, answers, handleAnswer, null, this);
+
+    nextQuestion.call(this);
+}
 
   nextQuestion.call(this);
 }
