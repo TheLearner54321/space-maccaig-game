@@ -127,6 +127,15 @@ const config = {
 
 const game = new Phaser.Game(config);
 
+const bg = this.add.tileSprite(
+  this.scale.width / 2,
+  this.scale.height / 2,
+  this.scale.width,
+  this.scale.height,
+  'background'
+);
+bg.setDepth(-1); // Ensure it's behind everything
+
 window.addEventListener('resize', () => {
   game.scale.resize(window.innerWidth, window.innerHeight);
   // Adjust game elements if necessary
@@ -257,13 +266,33 @@ function nextQuestion() {
   currentQuote = Phaser.Utils.Array.GetRandom(quotes);
   questionText.setText('"' + currentQuote.quote + '"');
 
- Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
-    const x = 200 + i * 200;
-    const ans = answers.create(x, 0, 'book');
-    ans.setData('text', opt);
-    ans.setData('correct', opt === currentQuote.correct);
-    ans.setVelocityY(100 + (level - 1) * 30);
-    const label = this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
-    // Remove or correct 'answer*' here
+Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
+  const x = 200 + i * 200;
+  const ans = answers.create(x, 0, 'book');
+  ans.setData('text', opt);
+  ans.setData('correct', opt === currentQuote.correct);
+  ans.setVelocityY(100 + (level - 1) * 30);
+
+  const label = this.add.text(x - 40, 120, opt, {
+    fontSize: '12px',
+    fill: '#fff'
+  });
+  answerTexts.push(label); // Add this line to store labels for cleanup
 });
 
+const spacing = this.scale.width / 4;
+const startX = spacing;
+Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
+  const x = startX + i * spacing;
+  const ans = answers.create(x, 0, 'book');
+  ans.setData('text', opt);
+  ans.setData('correct', opt === currentQuote.correct);
+  ans.setVelocityY(100 + (level - 1) * 30);
+
+  const label = this.add.text(x - 40, 120, opt, {
+    fontSize: '12px',
+    fill: '#fff',
+    wordWrap: { width: spacing - 20 }
+  });
+  answerTexts.push(label);
+});
