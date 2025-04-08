@@ -257,11 +257,13 @@ function nextQuestion() {
   currentQuote = Phaser.Utils.Array.GetRandom(quotes);
   questionText.setText('"' + currentQuote.quote + '"');
 
-  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
+ Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
     const x = 200 + i * 200;
     const ans = answers.create(x, 0, 'book');
     ans.setData('text', opt);
     ans.setData('correct', opt === currentQuote.correct);
     ans.setVelocityY(100 + (level - 1) * 30);
     const label = this.add.text(x - 40, 120, opt, { fontSize: '12px', fill: '#fff' });
-    answer*
+    // Remove or correct 'answer*' here
+});
+
