@@ -137,6 +137,8 @@ function preload() {
   this.load.audio('gameover', 'assets/sounds/gameover.wav');
 }
 
+let player;
+
 function create() {
     // Add background
     this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 'background');
@@ -190,6 +192,36 @@ function update() {
   bullets.getChildren().forEach(bullet => {
     if (bullet.y < 0) bullet.destroy();
   });
+}
+
+// Player movement
+    if (this.cursors.left.isDown) {
+        player.setVelocityX(-200);
+    } else if (this.cursors.right.isDown) {
+        player.setVelocityX(200);
+    } else {
+        player.setVelocityX(0);
+    }
+
+    if (this.cursors.up.isDown) {
+        player.setVelocityY(-200);
+    } else if (this.cursors.down.isDown) {
+        player.setVelocityY(200);
+    } else {
+        player.setVelocityY(0);
+    }
+}
+
+function create() {
+    // Existing code...
+
+    // Touch controls
+    this.input.on('pointermove', (pointer) => {
+        player.x = pointer.x;
+        player.y = pointer.y;
+    });
+
+    // Existing code...
 }
 
 function nextQuestion() {
