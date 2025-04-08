@@ -279,20 +279,3 @@ Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
   });
   answerTexts.push(label); // Add this line to store labels for cleanup
 });
-
-const spacing = this.scale.width / 4;
-const startX = spacing;
-Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
-  const x = startX + i * spacing;
-  const ans = answers.create(x, 0, 'book');
-  ans.setData('text', opt);
-  ans.setData('correct', opt === currentQuote.correct);
-  ans.setVelocityY(100 + (level - 1) * 30);
-
-  const label = this.add.text(x - 40, 120, opt, {
-    fontSize: '12px',
-    fill: '#fff',
-    wordWrap: { width: spacing - 20 }
-  });
-  answerTexts.push(label);
-});
