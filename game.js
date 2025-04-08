@@ -127,14 +127,30 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-const bg = this.add.tileSprite(
-  this.scale.width / 2,
-  this.scale.height / 2,
-  this.scale.width,
-  this.scale.height,
-  'background'
-);
-bg.setDepth(-1); // Ensure it's behind everything
+create() {
+  // Add background with correct depth
+  this.bg = this.add.tileSprite(
+    this.scale.width / 2,
+    this.scale.height / 2,
+    this.scale.width,
+    this.scale.height,
+    'background'
+  );
+  this.bg.setDepth(-1);
+
+  // Setup player and other game elements...
+  ship = this.physics.add.image(this.scale.width / 2, this.scale.height - 50, 'ship');
+  bullets = this.physics.add.group({ classType: Phaser.GameObjects.Image });
+  answers = this.physics.add.group();
+  answerTexts = [];
+
+  // Input buttons
+  this.add.image(50, this.scale.height - 50, 'left').setInteractive().on('pointerdown', moveLeft);
+  this.add.image(this.scale.width - 50, this.scale.height - 50, 'right').setInteractive().on('pointerdown', moveRight);
+  this.add.image(this.scale.width / 2, this.scale.height - 50, 'shoot').setInteractive().on('pointerdown', shoot);
+
+  nextQuestion.call(this);
+}
 
 window.addEventListener('resize', () => {
   game.scale.resize(window.innerWidth, window.innerHeight);
@@ -279,3 +295,38 @@ Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
   });
   answerTexts.push(label); // Add this line to store labels for cleanup
 });
+
+function nextQuestion() {
+  // Clear previous answer texts
+  answerTexts.forEach(txt => txt.destroy());
+  answerTexts = [];
+
+  if (level > quotes.length) {
+    // Game over / victory
+    this.add.text(this.scale.width / 2 - 100, this.scale.height / 2, 'You Win!', {
+      fontSize: '32px',
+      fill: '#fff'
+    });
+    return;
+  }
+
+  const currentQuote = quotes[level - 1];
+  const spacing = this.scale.width / 4;
+  const startX = spacing;
+
+  Phaser.Utils.Array.Shuffle(currentQuote.options).forEach((opt, i) => {
+    const x = startX + i * spacing;
+
+    const ans = answers.create(x, 0, 'book');
+    ans.setData('text', opt);
+    ans.setData('correct', opt === currentQuote.correct);
+    ans.setVelocityY(100 + (level - 1) * 30);
+
+    const label = this.add.text(x - 40, 120, opt, {
+      fontSize: '12px',
+      fill: '#fff',
+      wordWrap: { width: spacing - 20 }
+    });
+    answerTexts.push(label);
+  });
+}
